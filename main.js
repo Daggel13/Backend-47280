@@ -1,58 +1,63 @@
 class ProductManager {
-  constructor() {
-    this.products = []; 
+  constructor(){
+    this.products = []
   }
 
-  
-  addProduct(title, description, price, thumbnail, code, stock) {
-    const product = {
-      title: title,
-      description: description,
-      price: price,
-      thumbnail: thumbnail,
-      code: code,
-      stock: stock
-    };
-    this.products.push(product);
+  getProducts ( ) {
+    return this.products
   }
 
-  
-  findProductByCode(code) {
-    return this.products.find(product => product.code === code);
+  getProductById(id){
+    let product = this.products.find(prod => prod.id == id)
+
+    if(product){
+      return product
+  }
+  return "Not Found"
+}
+
+addProduct(product) {
+  if ( this.products.find(prod => prod.code == product.code)){
+    return "producto ya presente"
   }
 
- 
-  updateStockByCode(code, newStock) {
-    const product = this.findProductByCode(code);
-    if (product) {
-      product.stock = newStock;
+  if (product.code != "" || product.stock >= 0){
+    this.products.push(product)
+  }else{
+    return "no puedo cargar productos vacios"
+  }
+}
+}
+
+
+class Product {
+  constructor(title, description, price, thumbnail, code, stock) {
+    this.title = title
+    this.description = description
+    this.price = price
+    this.thumbnail = thumbnail
+    this.code = code
+    this.stock = stock
+    this.id = Product.incrementarID()
+  }
+
+  static incrementarID(){
+    if(this.idIncrement){
+      this.idIncrement++
+    }else{
+      this.idIncrement = 1
     }
-  }
-
-  
-  removeProductByCode(code) {
-    this.products = this.products.filter(product => product.code !== code);
-  }
-
-  getAllProducts() {
-    return this.products;
-  }
+  return this.idIncrement
+}
 }
 
-const productManager = new ProductManager();
-productManager.addProduct('Product 1', 'Description 1', 19.99, 'thumbnail1.jpg', '001', 50);
-productManager.addProduct('Product 2', 'Description 2', 29.99, 'thumbnail2.jpg', '002', 30);
-productManager.addProduct('Product 3', 'Description 3', 9.99, 'thumbnail3.jpg', '003', 100);
+const product1 = new Product("Procesador", "Ryzen", 58900, "", "123", 20) 
+const product2 = new Product("Procesador", "Ryzen", 58900, "", "456", 20) 
 
-const product1 = productManager.findProductByCode('001');
-if (product1) {
-  console.log('Product found:', product1);
-} else {
-  console.log('Product not found.');
-}
+const productManager = new ProductManager()
 
-productManager.updateStockByCode('002', 20);
-console.log('Updated product:', productManager.findProductByCode('002'));
+productManager.addProduct(product1)
+productManager.addProduct(product2)
 
-productManager.removeProductByCode('003');
-console.log('Remaining products:', productManager.getAllProducts());
+console.log(productManager.getProducts());
+console.log(productManager.getProductById(2));
